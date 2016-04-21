@@ -1,8 +1,9 @@
 package cartes;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public enum SorteCarte {
+public enum SorteCarte implements Serializable {
 	COEUR('♥', Color.RED), CARREAU('♦', Color.RED), PIQUE('♠', Color.BLACK), TREFLE('♣', Color.BLACK);
 
 	private char symbole = ' ';

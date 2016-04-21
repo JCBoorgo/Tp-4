@@ -106,7 +106,7 @@ public class ListeSymetrique implements List<Object>, Serializable {
 	//TODO test
 	public void add(int index, Object e) throws IndexOutOfBoundsException {
 		if ((index <= this.size()) && (index >= 0)) {
-			if (index == this.size() - 1) {
+			if (index == this.size()) {
 				this.add(e);
 			} else if (index == 0) {
 				NoeudSymetrique temp = new NoeudSymetrique(e);
@@ -120,7 +120,7 @@ public class ListeSymetrique implements List<Object>, Serializable {
 				this.findNode(index - 1).setSuivant(temp);
 				temp.setPrecedent(this.findNode(index - 1));
 			}
-			taille++;
+			this.taille++;
 		} else {
 			throw new IndexOutOfBoundsException();
 		}
@@ -165,6 +165,7 @@ public class ListeSymetrique implements List<Object>, Serializable {
 	public void clear() {
 		this.tete = null;
 		this.fin = null;
+		this.taille = 0;
 		System.gc();
 	}
 
@@ -255,9 +256,20 @@ public class ListeSymetrique implements List<Object>, Serializable {
 		Object temp = null;
 		if (!this.isEmpty()) {
 			temp = this.get(index);
-			this.findNode(index + 1).setPrecedent(this.findNode(index - 1));
-			this.findNode(index - 1).setSuivant(this.findNode(index + 1));
-			System.gc();
+			if (index == this.size() - 1){
+				this.fin = this.findNode(index - 1);
+				this.findNode(index - 1).setSuivant(null);
+				System.gc();
+			} else if (index == 0){
+				this.findNode(index + 1).setPrecedent(null);
+				this.tete = this.findNode(index + 1);
+				System.gc();
+			} else {
+				this.findNode(index + 1).setPrecedent(this.findNode(index - 1));
+				this.findNode(index - 1).setSuivant(this.findNode(index + 1));
+				System.gc();
+			}
+			this.taille--;
 		}
 		return temp;
 	}
@@ -272,7 +284,7 @@ public class ListeSymetrique implements List<Object>, Serializable {
 	//TODO test
 	public boolean remove(Object o) {
 		if (this.contains(o)) {
-			this.remove(this.findNode(o));
+			this.remove(this.indexOf(o));
 		}
 		return true;
 	}
@@ -352,7 +364,7 @@ public class ListeSymetrique implements List<Object>, Serializable {
 		int indexCourant = 0;
 		NoeudSymetrique courant = this.tete;
 		while (indexCourant < this.size()) {
-			s += courant.getElement().toString();
+			s += courant.getElement().toString() +", ";
 			courant = courant.getSuivant();
 			indexCourant++;
 		}

@@ -1,23 +1,25 @@
 package cartes;
 
-import structures.pile.Pile;
+import java.io.Serializable;
 
-public class Pioche {
-	private Pile pioche = null;
+import structures.liste.ListeSymetrique;
+
+public class Pioche implements Serializable {
+	private ListeSymetrique pioche = null;
 
 	public Pioche(PaquetDeCartes paquet) {
-		pioche = new Pile();
+		pioche = new ListeSymetrique();
 		while (!paquet.isEmpty()) {
-			pioche.empiler(paquet.prendreCarte(paquet.size()));
+			pioche.add(paquet.prendreCarte(paquet.size()));
 		}
 	}
 
 	public Carte piger() {
-		return (Carte) pioche.depiler();
+		return (Carte) pioche.get(this.size() - 1);
 	}
 
 	public String consulterDessus() {
-		return ((Carte) (pioche.getPremier())).toStringCarte();
+		return ((Carte) (pioche.get(this.size() - 1))).toStringCarte();
 	}
 
 	public boolean isEmpty() {

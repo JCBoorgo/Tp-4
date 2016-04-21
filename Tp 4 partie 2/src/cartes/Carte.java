@@ -1,8 +1,10 @@
 package cartes;
 
+import java.io.Serializable;
+
 import exception.ConstructeurException;
 
-public class Carte implements Comparable<Carte> {
+public class Carte implements Comparable<Carte>, Serializable {
 
 	public static final Character IMAGE_DOS = ' ';
 	private SorteCarte sorte = null;

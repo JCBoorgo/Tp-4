@@ -395,7 +395,7 @@ public class AcesUpSolitaire extends JFrame {
 
 	/**
 	 * Permet de lire un fichier qui contient les informations au sujet d'une
-	 * partie. En plus de lire les données, elle remplie et dessine les
+	 * partie. En plus de lire les données, elle remplit et dessine les
 	 * composants
 	 */
 	public void gestionReprendreJeu() {
@@ -431,6 +431,15 @@ public class AcesUpSolitaire extends JFrame {
 	}
 
 	/**
+	 * Permet de mettre à jour toutes les colonnes de cartes
+	 */
+	public void dessinerToutesColonnes() {
+		for (int i = 0; i < COLONNES_DE_CARTES; i++) {
+			dessinerListeCartes(i);
+		}
+	}
+
+	/**
 	 * Permet de déplacer, selon les règles du jeu, une carte de la colonne de
 	 * cartes dont l'index de la colonne de carte est reçu en entrée.
 	 *
@@ -440,12 +449,25 @@ public class AcesUpSolitaire extends JFrame {
 	 * @param indexColonne
 	 *            , le numéro de la colonne d'où on veut déplacer la carte.
 	 */
-	// TODO Complétez le code de la méthode : gestionDeplacerListe
+	// TODO tester
 	public void gestionDeplacerListe(int indexColonne) {
 		// getColonneCartes()
 		// Colonne à updater directement dans le colonneCartes
 		// Ne pas oublier de faire dessinerListeCartes() à la fin
 		// Vérifier si présence de colonne vide (comme destination)
+		boolean fin = false;
+		int compteur = 0;
+		ListeSymetrique temp = getColonneCartes(indexColonne);
+		while (!fin) {
+			if ((indexColonne != compteur) && getColonneCartes(compteur).isEmpty()) {
+				getColonneCartes(compteur).add(temp.get(temp.size() - 1));
+				temp.remove(temp.size() - 1);
+				fin = true;
+			} else if (indexColonne >= (COLONNES_DE_CARTES - 1)) {
+				fin = true;
+			}
+		}
+		dessinerToutesColonnes();
 	}
 
 	/**
@@ -460,14 +482,39 @@ public class AcesUpSolitaire extends JFrame {
 	 * @param pNoListe
 	 *            , le numéro de la colonne d'où on veut enlever la carte.
 	 */
-	// TODO Complétez le code de la méthode : gestionEnleverListe
+	// TODO tester
 	public void gestionEnleverListe(int pNoListe) {
-		// Règle particulière: si stack de deux cartes de la même sorte,si la première s'enlève,
-		//     LES DEUX PARTENT (peu importe la situation (sauf pour les as))
+		// Règle particulière: si stack de deux cartes de la même sorte,si la
+		// première s'enlève, LES DEUX PARTENT
+		// (peu importe la situation (sauf pour les as))
 		// Ne JAMAIS enlever les as
 		// Déterminer l'ordre des cartes
 		// Déterminer sortes des bas de colonne
 		// Updater les colonnes à la fin
+		ListeSymetrique temp = getColonneCartes(pNoListe);
+		boolean fin = false;
+		int compteur = 0;
+		Carte carteToCompare = ((Carte) temp.get(temp.size() - 1));
+		while (!fin) {
+			if (compteur != pNoListe) {
+				ListeSymetrique colonne = getColonneCartes(pNoListe);
+				Carte tempC = ((Carte) colonne.get(colonne.size() - 1));
+				if (carteToCompare.getSorte().equals(tempC.getSorte())) {
+					if ((carteToCompare.compareTo(tempC) > 0) || (tempC.getValeurSymbole().equals("1 A"))) {
+						temp.remove(temp.size() - 1);
+						fin = true;
+						carteToCompare = ((Carte) temp.get(0));
+						if ((temp.size() == 1) && (carteToCompare.getSorte().equals(tempC.getSorte()))
+								&& !(carteToCompare.getValeurSymbole().equals("1 A"))) {
+							temp.remove(0);
+						}
+					}
+				}
+			} else if (compteur >= COLONNES_DE_CARTES - 1) {
+				fin = true;
+			}
+		}
+		dessinerToutesColonnes();
 	}
 
 	/**
@@ -526,11 +573,22 @@ public class AcesUpSolitaire extends JFrame {
 	 *
 	 * @return boolean, vrai si on a une victoire.
 	 */
-	// TODO Complétez le code de la méthode : partieGagne
+	// TODO tester
 	public boolean partieGagne() {
-		return true;
 		// Valider la taille des colonnes
 		// Vérifier si c'est des as
+		boolean gagne = true;
+		if (pioche.isEmpty()) {
+			for (int i = 0; i < COLONNES_DE_CARTES; i++) {
+				if (!(getColonneCartes(i).size() == 1)
+						|| !((Carte) getColonneCartes(i).get(0)).getValeurSymbole().equals("A")) {
+					gagne = false;
+				}
+			}
+		} else {
+			gagne = false;
+		}
+		return gagne;
 	}
 
 	/**
@@ -573,9 +631,17 @@ public class AcesUpSolitaire extends JFrame {
 	 *
 	 * @throws IOException
 	 */
-	// TODO Complétez le code de la méthode : enregistrerInfoPartie
+	// TODO tester
 	public void enregistrerInfoPartie(File pCible) throws IOException {
-		// Ben là c'est enregistrer...
+		FileOutputStream fichier = new FileOutputStream(pCible);
+		ObjectOutputStream stream = new ObjectOutputStream(fichier);
+		for (int i = 0; i < COLONNES_DE_CARTES; i++) {
+			stream.writeObject(colonneCartes[i]);
+		}
+		stream.writeObject(pioche);
+		stream.flush();
+		fichier.close();
+
 	}
 
 	/**
@@ -588,9 +654,15 @@ public class AcesUpSolitaire extends JFrame {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	// TODO Complétez le code de la méthode : lireInfoPartie
+	// TODO tester
 	public void lireInfoPartie(File pSource) throws IOException, ClassNotFoundException {
-		// Pis ça c'est lire...
+		FileInputStream fichier = new FileInputStream(pSource);
+		ObjectInputStream stream = new ObjectInputStream(fichier);
+		for (int i = 0; i < COLONNES_DE_CARTES; i++) {
+			colonneCartes[i] = (ListeSymetrique) stream.readObject();
+		}
+		pioche = (Pioche) stream.readObject();
+		fichier.close();
 	}
 
 	/**
@@ -627,8 +699,8 @@ public class AcesUpSolitaire extends JFrame {
 	public static void main(String[] args) {
 
 		// Mode tests
-		partiePiper();
+		//partiePiper();
 		// Mode jeu
-		// vraiePartie();
+		vraiePartie();
 	}
 }

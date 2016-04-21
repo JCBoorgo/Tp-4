@@ -1,8 +1,10 @@
 package cartes;
 
+import java.io.Serializable;
+
 import structures.liste.ListeSymetrique;
 
-public class PaquetDeCartes {
+public class PaquetDeCartes implements Serializable {
 
 	public static final int NBR_ECHANGE = 1000;
 	private ListeSymetrique paquet = null;
@@ -17,7 +19,9 @@ public class PaquetDeCartes {
 	}
 
 	public PaquetDeCartes(ListeSymetrique paquet) {
-		this.paquet = paquet;
+		if (paquet != null) {
+			this.paquet = paquet;
+		}
 	}
 
 	public void brasser() {
@@ -37,11 +41,13 @@ public class PaquetDeCartes {
 
 	public Carte prendreCarte(int position) {
 		Carte temp = null;
+		Carte temp2 = null;
 		if (validerPosition(position) && !paquet.isEmpty()) {
 			temp = (Carte) paquet.get(paquet.size() - position);
+			temp2 = new Carte(temp.getValeur(), temp.getSorte());
 			paquet.remove(paquet.size() - position);
 		}
-		return temp;
+		return temp2;
 	}
 
 	public Carte consulterCarte(int position) {
