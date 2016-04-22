@@ -23,7 +23,7 @@ public class Pioche implements Serializable {
 	public Pioche(PaquetDeCartes paquet) {
 		pioche = new ListeSymetrique();
 		while (!paquet.isEmpty()) {
-			pioche.add(paquet.prendreCarte(paquet.size()));
+			pioche.add(paquet.prendreCarte(paquet.size() - 1));
 		}
 	}
 
@@ -33,7 +33,14 @@ public class Pioche implements Serializable {
 	 * @return La carte pigée
 	 */
 	public Carte piger() {
-		return (Carte) pioche.get(this.size() - 1);
+		Carte temp = null;
+		Carte temp2 = null;
+		if (!pioche.isEmpty()) {
+			temp = (Carte) pioche.get(pioche.size() - 1);
+			temp2 = new Carte(temp.getValeur(), temp.getSorte());
+			pioche.remove(pioche.size() - 1);
+		}
+		return temp2;
 	}
 
 	/**
