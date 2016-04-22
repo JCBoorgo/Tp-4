@@ -9,7 +9,7 @@ import structures.liste.ListeSymetrique;
  * Classe utilitaire qui permet à un joueur de tricher lorsque la partie est
  * terminée.
  *
- * @author Jocelyn
+ * @author Jean-Christophe Bourgault et David-Alexandre Deshaies-Lévesque
  *
  */
 public class Triche {

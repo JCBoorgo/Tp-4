@@ -38,7 +38,7 @@ import cartes.Pioche;
 /**
  * Application de jeu de Aces Up Solitaire
  *
- * @author Vos noms
+ * @author Jean-Christophe Bourgault et David-Alexandre Deshaies-Lévesque
  */
 public class AcesUpSolitaire extends JFrame {
 
